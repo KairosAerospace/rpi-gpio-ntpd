@@ -25,6 +25,10 @@ jobs:
       - run: kairos_container_init
 
       - run:
+          name: ls here
+          command: ls
+
+      - run:
           name: Build packages
           command: sudo apt-get install make && sudo make install
 
