@@ -30,7 +30,7 @@ jobs:
 
       - run:
           name: Build packages
-          command: sudo apt-get install make && sudo make install
+          command: sudo apt-get update && sudo apt-get install make && sudo make install
 
       - store_artifacts:
           path: dist
