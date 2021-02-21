@@ -1,0 +1,88 @@
+version: 2.1
+executors:
+  kairos-continuous-base:
+    docker:
+      - image: 137296740171.dkr.ecr.us-west-2.amazonaws.com/kairos-focal:circleci
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    working_directory: /opt/kairos/build-home/repo
+commands:
+  setup-build-container:
+    description: standard python build flow
+    steps:
+      - checkout
+      - run: kairos_container_init
+jobs:
+  build:
+    executor: kairos-continuous-base
+    working_directory: /opt/kairos/build-home/repo
+    environment:
+      MAJOR_VERSION: 1
+      PKG_ARTIFACTORY: "kairos-artifactory"
+      PKG_AWS_FLIGHT: "kairos-aws-flight"
+      PKG_AWS_UPLOADER: "kairos-aws-uploader"
+      PKG_FLIGHT_FILESYSTEM: "kairos-flight-filesystem"
+      PKG_UPLOADER_FILESYSTEM: "kairos-uploader-filesystem"
+      PKG_OPT: "kairos-opt"
+      PKG_SYS_PACKAGES: "kairos-sys-packages"
+      PKG_VPN: "kairos-vpn"
+      LOGNAME: "root"
+    steps:
+      - setup-build-container
+
+      - checkout
+
+      - run: kairos_container_init
+
+      - run:
+          name: Build packages
+          command: ./circle_scripts/build-packages
+
+      - setup_remote_docker
+
+      - run:
+          name: Download and build test-udoo image
+          command: |
+            eval $(aws ecr get-login --no-include-email)
+            docker build -f /opt/kairos/build-home/repo/circle_scripts/circle_bin/test-udoo-dockerfile -t test-udoo /opt/kairos/build-home/
+      - run:
+          name: Run Udoo tests
+          command: docker run test-udoo -d -rm
+
+      - run:
+          name: Download and build test-uploader image
+          command: docker build -f /opt/kairos/build-home/repo/circle_scripts/circle_bin/test-uploader-dockerfile -t test-uploader /opt/kairos/build-home/
+
+      - run:
+          name: Run Uploader tests
+          command: docker run test-uploader -d -rm
+
+      - run:
+          name: Test install of base packages onto this circle machine
+          command: ./test_builds
+
+      - store_artifacts:
+          path: dist
+          destination: build-artifacts
+
+      - run: ./circle_scripts/publish-to-artifactory
+
+      - run: curl -u $KAIROS_PUBLISH_USER:$KAIROS_PUBLISH_API_KEY -X POST "https://kairosaerospace.jfrog.io/kairosaerospace/api/deb/reindex/kairos-apt?writeProps=0"
+
+      - deploy:
+          name: conditionally run a deploy job
+          command: |
+            if [[ $CIRCLE_BRANCH == "master" ]]; then
+              ./circle_scripts/trigger_build kairos-docker-flightsim:x-ubuntu20
+            fi
+
+notify:
+  webhooks:
+    - url: https://bdoa77w3h0.execute-api.us-west-2.amazonaws.com/webhook/
+workflows:
+  version: 2
+  kairos-workflow:
+    jobs:
+      - build:
+          context: org-global
