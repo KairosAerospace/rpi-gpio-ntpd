@@ -20,15 +20,13 @@ jobs:
     environment:
       MAJOR_VERSION: 1
     steps:
-      - setup-build-container
-
       - checkout
 
       - run: kairos_container_init
 
       - run:
           name: Build packages
-          command: sudo make install
+          command: sudo apt-get install make && sudo make install
 
       - store_artifacts:
           path: dist
