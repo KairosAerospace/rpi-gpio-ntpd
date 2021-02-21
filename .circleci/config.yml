@@ -15,7 +15,7 @@ commands:
       - run: kairos_container_init
 jobs:
   build:
-    executor: kairos-continuous-build
+    executor: kairos-continuous-base
     working_directory: /opt/kairos/build-home/repo
     environment:
       MAJOR_VERSION: 1
