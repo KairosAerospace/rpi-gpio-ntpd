@@ -1,0 +1,50 @@
+#!/bin/bash -e
+# package_rpi_gpio_ntp.sh
+
+PACKING_DIR=$(pwd)
+UPSTREAM_VERSION=1.0  # Change this at will, I guess?
+VERSION=${UPSTREAM_VERSION}-${CIRCLE_BUILD_NUM:-non-circle}
+PACKAGE_DIR="rpi-gpio-ntp_${CIRCLE_BRANCH}_${VERSION}_x86"
+PACKAGE_DEB="${LEAKYD_DIR}.deb"
+
+LEAKYD=$1
+if [[ ! -f ${LEAKYD} ]] | [[ $(basename ${LEAKYD}) != "leakyd" ]]; then
+  echo "ERR: No leakyd file found at specified location."
+  exit 2
+fi
+if [[ ! -f generate_debian_control.py ]]; then
+  echo "ERR: generate_debian_control.py not found in this directory."
+  exit 3
+fi
+
+SIZE=$(bc -l <<< "scale=0; $(stat --printf="%s" ${LEAKYD})/1024")
+
+mkdir -p ${LEAKYD_DIR}
+rsync -a leakyd/ ${LEAKYD_DIR}/
+mkdir -p ${LEAKYD_DIR}/usr/bin
+mkdir -p ${LEAKYD_DIR}/opt/kairos/leaky_configs
+mkdir -p ${LEAKYD_DIR}/opt/kairos/calpacks
+
+cp ${LEAKYD} ${LEAKYD_DIR}/usr/bin/
+cp -R ../leaky_configs ${LEAKYD_DIR}/opt/kairos
+cp -R ../calpacks ${LEAKYD_DIR}/opt/kairos
+
+cd ${LEAKYD_DIR}/DEBIAN
+python ${PACKING_DIR}/generate_debian_control.py --git-hash ${GIT_HASH} --size ${SIZE} --version ${VERSION}
+if ! [ "${CIRCLE_BRANCH}" == "master" ] && ! [ "${CIRCLE_BRANCH}" == "compile-leaky-x86" ] ; then
+    sed -i 's@Package: leakyd@Package: leakyd-'$CIRCLE_BRANCH'@' control
+fi
+cd ${PACKING_DIR}
+dpkg-deb --build ${LEAKYD_DIR}
+
+# This check (for $CIRCLE) isn't -technically- needed, but adds clarity.
+if [[ ${CIRCLE_ARTIFACTS} ]]; then
+  cp ${LEAKYD_DEB} ${CIRCLE_ARTIFACTS}
+  if [[ $? -eq 0 ]]; then
+    echo "Stored ${LEAKYD_DEB} into \$CIRCLE_ARTIFACTS"
+  else
+    echo "cp ${LEAKYD_DEB} ${CIRCLE_ARTIFACTS} failed" && exit 1
+  fi
+fi
+
+exit 0

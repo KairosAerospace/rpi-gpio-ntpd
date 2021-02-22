@@ -1,0 +1,12 @@
+Package: rpi-gpio-ntp
+Provides:
+Version:
+Architecture: amd64
+Essential: no
+Depends:
+Pre-Depends:
+Conflicts:
+Maintainer: Alex Wolff <alex@kairosaerospace.com>
+Priority: optional
+Homepage: https://github.com/KairosAerospace/rpi-gpio-ntp
+Description: Kairos fork of rpi_gpio_ntp
