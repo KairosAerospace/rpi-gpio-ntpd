@@ -34,9 +34,8 @@ jobs:
       - run:
           name: Package
           command: |
-            ls
             ./package_rpi_gpio_ntp /opt/kairos/build-home/repo/rpi-gpio-ntp/rpi_gpio_ntp
-            ls
+            cp rpi-gpio-ntp*.deb /opt/kairos/build-home/repo/dist
 
       - store_artifacts:
           path: dist
