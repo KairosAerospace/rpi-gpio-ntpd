@@ -35,7 +35,7 @@ jobs:
           name: Package
           command: |
             ls
-            ./package_rpi_gpio_ntp
+            ./package_rpi_gpio_ntp /opt/kairos/build-home/repo/rpi-gpio-ntp/rpi_gpio_ntp
             ls
 
       - store_artifacts:
