@@ -27,6 +27,7 @@ jobs:
       - run:
           name: Build
           command: |
+            sudo apt-get update && sudo apt-get install build-essential
             cd rpi-gpio-ntp
             make -j 8
 
