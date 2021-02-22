@@ -25,12 +25,11 @@ jobs:
       - run: kairos_container_init
 
       - run:
-          name: ls here
-          command: ls
-
-      - run:
-          name: Build packages
-          command: sudo apt-get update && sudo apt-get install make && sudo make install
+          name: Build and package
+          command: |
+          ./package_rpi_gpio_ntp
+          ls
+          cp rpi-gpio-ntp*.deb /opt/kairos/build-home/repo/build_artifacts
 
       - store_artifacts:
           path: dist
