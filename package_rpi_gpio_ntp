@@ -1,7 +1,8 @@
 #!/bin/bash -e
 # package_rpi_gpio_ntp.sh
 
-INIT_PACKAGE_DIR=$(pwd)/rpi-gpio-ntp
+REPO=$(pwd)
+INIT_PACKAGE_DIR=${REPO}/rpi-gpio-ntp
 UPSTREAM_VERSION=1.0
 VERSION=${UPSTREAM_VERSION}-${CIRCLE_BUILD_NUM:-non-circle}
 PACKAGE_DIR="rpi-gpio-ntp_${CIRCLE_BRANCH}_${VERSION}"
@@ -26,7 +27,6 @@ fi
 sed -i 's@Version:@Version: '$VERSION'@' control
 cat control
 cd ${REPO}
-ls ${PACKAGE_DIR}
 dpkg-deb --build ${PACKAGE_DIR}
 
 exit 0
