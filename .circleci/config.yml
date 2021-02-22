@@ -25,11 +25,17 @@ jobs:
       - run: kairos_container_init
 
       - run:
-          name: Build and package
+          name: Build
           command: |
+            cd rpi-gpio-ntp
+            make -j 8
+
+      - run:
+          name: Package
+          command: |
+            ls
             ./package_rpi_gpio_ntp
             ls
-            cp rpi-gpio-ntp*.deb /opt/kairos/build-home/repo/build_artifacts
 
       - store_artifacts:
           path: dist
