@@ -13,8 +13,9 @@ if [[ ! -f ${EXECUTABLE} ]] | [[ $(basename ${EXECUTABLE}) != "rpi_gpio_ntp" ]];
 fi
 
 mkdir -p ${PACKAGE_DIR}
-rsync -a ${INIT_PACKAGE_DIR} ${PACKAGE_DIR}/
+rsync -a ${INIT_PACKAGE_DIR}/ ${PACKAGE_DIR}/
 
+ls ${PACKAGE_DIR}
 cp ${EXECUTABLE} ${PACKAGE_DIR}/usr/bin/
 
 cd ${PACKAGE_DIR}/DEBIAN
