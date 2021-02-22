@@ -16,6 +16,7 @@ mkdir -p ${PACKAGE_DIR}
 rsync -a ${INIT_PACKAGE_DIR}/ ${PACKAGE_DIR}/
 
 ls ${PACKAGE_DIR}
+mkdir -p ${PACKAGE_DIR}/usr/bin/
 cp ${EXECUTABLE} ${PACKAGE_DIR}/usr/bin/
 
 cd ${PACKAGE_DIR}/DEBIAN
