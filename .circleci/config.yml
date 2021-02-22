@@ -35,6 +35,7 @@ jobs:
           name: Package
           command: |
             ./package_rpi_gpio_ntp /opt/kairos/build-home/repo/rpi-gpio-ntp/rpi_gpio_ntp
+            mkdir /opt/kairos/build-home/repo/build_artifacts
             cp rpi-gpio-ntp*.deb /opt/kairos/build-home/repo/build_artifacts
 
       - store_artifacts:
