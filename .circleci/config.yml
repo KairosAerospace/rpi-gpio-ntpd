@@ -35,11 +35,10 @@ jobs:
           name: Package
           command: |
             ./package_rpi_gpio_ntp /opt/kairos/build-home/repo/rpi-gpio-ntp/rpi_gpio_ntp
-            cp rpi-gpio-ntp*.deb /opt/kairos/build-home/repo/dist
-            ls /opt/kairos/build-home/repo/dist
+            cp rpi-gpio-ntp*.deb /opt/kairos/build-home/repo/build_artifacts
 
       - store_artifacts:
-          path: dist
+          path: /opt/kairos/build-home/repo/build_artifacts
           destination: build-artifacts
 
 #      - run: ./circle_scripts/publish-to-artifactory
