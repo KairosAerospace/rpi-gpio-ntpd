@@ -42,16 +42,7 @@ jobs:
           path: /opt/kairos/build-home/repo/build_artifacts
           destination: build-artifacts
 
-#      - run: ./circle_scripts/publish-to-artifactory
-#
-#      - run: curl -u $KAIROS_PUBLISH_USER:$KAIROS_PUBLISH_API_KEY -X POST "https://kairosaerospace.jfrog.io/kairosaerospace/api/deb/reindex/kairos-apt?writeProps=0"
-#
-#      - deploy:
-#          name: conditionally run a deploy job
-#          command: |
-#            if [[ $CIRCLE_BRANCH == "master" ]]; then
-#              ./circle_scripts/trigger_build kairos-docker-flightsim:x-ubuntu20
-#            fi
+      - run: ./circle_scripts/publish-to-artifactory
 
 notify:
   webhooks:
