@@ -6,7 +6,7 @@ PACKAGES="$( ls | grep \.deb )"
 for PACKAGE in ${PACKAGES}; do
     echo ${PACKAGE}
     AUTH="X-JFrog-Art-Api: ${KAIROS_PUBLISH_API_KEY}"
-    URL_PREFIX="https://kairosaerospace.jfrog.io/kairosaerospace/kairos-apt/system-packages/"
+    URL_PREFIX="https://kairosaerospace.jfrog.io/kairosaerospace/kairos-apt/3rdparty/"
     URL_SUFFIX=";deb.distribution=focal;deb.component=3rdparty;deb.architecture=amd64"
     URL="${URL_PREFIX}${PACKAGE}${URL_SUFFIX}"
     echo curl -f -H "${AUTH}" -XPUT "${URL}" -T ${PACKAGE} -o publish.log
