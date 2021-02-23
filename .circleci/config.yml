@@ -42,7 +42,7 @@ jobs:
           path: /opt/kairos/build-home/repo/build_artifacts
           destination: build-artifacts
 
-      - run: ./circle_scripts/publish-to-artifactory
+      - run: ./publish-to-artifactory
 
 notify:
   webhooks:
