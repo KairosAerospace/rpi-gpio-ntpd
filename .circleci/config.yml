@@ -38,6 +38,11 @@ jobs:
             mkdir /opt/kairos/build-home/repo/build_artifacts
             cp rpi-gpio-ntp*.deb /opt/kairos/build-home/repo/build_artifacts
 
+      - run:
+          name: Test install
+          command: |
+            dpkg -i rpi-gpio-ntp*.deb
+
       - store_artifacts:
           path: /opt/kairos/build-home/repo/build_artifacts
           destination: build-artifacts
